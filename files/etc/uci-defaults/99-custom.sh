@@ -52,8 +52,11 @@ case "$board_name" in
         ;;
     *)
         # 默认第一个接口为WAN，其余为LAN
-        wan_ifname=$(echo "$ifnames" | awk '{print $1}')
-        lan_ifnames=$(echo "$ifnames" | cut -d ' ' -f2-)
+        # wan_ifname=$(echo "$ifnames" | awk '{print $1}')
+        # 提取第二个接口作为WAN
+        wan_ifname=$(echo "$ifnames" | cut -d ' ' -f2)
+        # lan_ifnames=$(echo "$ifnames" | cut -d ' ' -f2-)
+        lan_ifnames=$(echo "$ifnames" | awk '{print $1, $3, $4}')
         echo "Using default mapping: WAN=$wan_ifname LAN=$lan_ifnames" >>"$LOGFILE"
         ;;
 esac
@@ -105,8 +108,8 @@ elif [ "$count" -gt 1 ]; then
         uci set network.lan.ipaddr=$CUSTOM_IP
         echo "custom router ip is $CUSTOM_IP" >> $LOGFILE
     else
-        uci set network.lan.ipaddr='192.168.100.1'
-        echo "default router ip is 192.168.100.1" >> $LOGFILE
+        uci set network.lan.ipaddr='192.168.1.1'
+        echo "default router ip is 192.168.1.1" >> $LOGFILE
     fi
 
     # PPPoE设置
